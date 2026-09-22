@@ -1,0 +1,4 @@
+bucket       = "jiro-779-wordpress-terraform-state"
+key          = "platform/prod/terraform.tfstate"
+region       = "eu-north-1"
+use_lockfile = true

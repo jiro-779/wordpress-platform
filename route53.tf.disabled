@@ -1,0 +1,8 @@
+resource "aws_route53_zone" "main" {
+  name = "jiro.c-loud.am"
+
+  tags = {
+    Name    = "jiro.c-loud.am"
+    Project = "wordpress"
+  }
+}
