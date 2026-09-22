@@ -27,9 +27,7 @@ jobs:
         with:
           terraform_version: 1.15.8
 
-      # Temporary diagnostic step.
-      # Shows the real GitHub OIDC subject used by this repository.
-            - name: Configure AWS credentials
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: arn:aws:iam::377228489440:role/jiro-779-github
