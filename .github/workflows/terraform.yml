@@ -1,3 +1,4 @@
+
 name: Terraform Platform DEV
 
 on:
@@ -30,10 +31,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
-          
-       role-to-assume: arn:aws:iam::106552501462:role/github-actions-wordpress-platform
-       aws-region: eu-north-1
-
+          role-to-assume: arn:aws:iam::106552501462:role/github-actions-wordpress-platform
+          aws-region: eu-north-1
 
       - name: Terraform Init
         run: terraform init -reconfigure -backend-config="config/dev.backend"
@@ -46,5 +45,3 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan -var-file="config/dev.tfvars" -out=tfplan
-
-      
