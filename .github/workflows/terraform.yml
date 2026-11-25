@@ -5,7 +5,13 @@ on:
   push:
     branches:
       - main
+
   workflow_dispatch:
+    inputs:
+      apply:
+        description: "Deploy AWS infrastructure"
+        type: boolean
+        default: false
 
 permissions:
   id-token: write
@@ -27,19 +33,6 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.15.8
-          
-      - name: Check OIDC token claims
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const token = await core.getIDToken('sts.amazonaws.com');
-            const payload = JSON.parse(
-              Buffer.from(token.split('.')[1], 'base64url').toString()
-            );
-            console.log('issuer:', payload.iss);
-            console.log('audience:', payload.aud);
-            console.log('subject:', payload.sub);
-
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5
@@ -58,3 +51,7 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan -var-file="config/dev.tfvars" -out=tfplan
+
+      - name: Terraform Apply
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply == true && github.ref == 'refs/heads/main' }}
+        run: terraform apply -auto-approve tfplan
