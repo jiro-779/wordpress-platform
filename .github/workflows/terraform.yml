@@ -1,4 +1,3 @@
-
 name: Terraform Platform DEV
 
 on:
@@ -8,14 +7,22 @@ on:
 
   workflow_dispatch:
     inputs:
-      apply:
-        description: "Deploy AWS infrastructure"
-        type: boolean
-        default: false
+      action:
+        description: "Select Terraform action"
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
+        default: plan
 
 permissions:
   id-token: write
   contents: read
+
+concurrency:
+  group: terraform-platform-dev
+  cancel-in-progress: false
 
 jobs:
   terraform:
@@ -50,8 +57,17 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
+        if: ${{ github.event_name == 'push' || inputs.action != 'destroy' }}
         run: terraform plan -var-file="config/dev.tfvars" -out=tfplan
 
       - name: Terraform Apply
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply == true && github.ref == 'refs/heads/main' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.action == 'apply' && github.ref == 'refs/heads/main' }}
         run: terraform apply -auto-approve tfplan
+
+      - name: Terraform Destroy Plan
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.action == 'destroy' && github.ref == 'refs/heads/main' }}
+        run: terraform plan -destroy -var-file="config/dev.tfvars" -out=destroy.tfplan
+
+      - name: Terraform Destroy
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.action == 'destroy' && github.ref == 'refs/heads/main' }}
+        run: terraform apply -auto-approve destroy.tfplan
