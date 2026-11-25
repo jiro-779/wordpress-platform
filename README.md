@@ -78,3 +78,18 @@ Route 53 and ACM configurations are currently disabled.
 Junior DevOps / Cloud Engineer
 
 [GitHub Profile](https://github.com/jiro-779)
+
+
+## Deployment Screenshots
+
+### Successful Terraform Platform Deployment
+
+![Platform Deployment](./platform-deployment.png)
+
+### Running EC2 Instance
+
+![EC2 Instance](./ec2-instance.png)
+
+### WordPress Dashboard
+
+![WordPress Dashboard](./wordpress-dashboard.png)
